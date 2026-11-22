@@ -26,7 +26,7 @@ Technical details of the SE model, including its experimental validation and bui
 
 ### Software Dependencies
 
-- Python 3.9 or higher
+- Python 3.10 or higher
 - NumPy
 - pandas
 - openpyxl
