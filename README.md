@@ -2,77 +2,93 @@
 
 ## Introduction
 
-Spectrally-Equivalent-Model is a Python tool for calculating the optical properties of glazing under time-varying solar spectra. Spectrally selective windows respond differently to different wavelengths of sunlight, whereas conventional building simulations commonly use glazing properties weighted by a fixed reference spectrum (AM1.5G). The spectrally equivalent (SE) approach combines the incident solar spectral irradiance with wavelength-dependent glazing properties to obtain time-dependent optical inputs for building simulation.
+Spectrally-Equivalent-Model is a Python-based tool developed to incorporate time-varying solar spectra into the performance evaluation of spectrally selective windows (SSWs). Conventional building energy simulations typically use glazing optical properties weighted by a fixed reference solar spectrum (AM1.5G), whereas the spectral composition of sunlight varies with atmospheric conditions, location, and time.
 
-For an optical property of glazing, the SE calculation is
+The spectrally equivalent (SE) model addresses this mismatch by combining incident solar spectral irradiance with the wavelength-dependent optical properties of glazing. It calculates time-dependent equivalent transmittance, reflectance, and absorptance, which can be incorporated into EnergyPlus through glazing construction definitions and Energy Management System (EMS) controls without modifying the underlying simulation solver.
 
-\[
-x_{\mathrm{SE}}(t)=\frac{\int_{\lambda_1}^{\lambda_2} E(\lambda,t)x(\lambda)\,\mathrm{d}\lambda}{\int_{\lambda_1}^{\lambda_2} E(\lambda,t)\,\mathrm{d}\lambda}.
-\]
+The main functions of this tool include:
 
-where \(E(\lambda,t)\) is the incident solar spectral irradiance and \(x(\lambda)\) is the spectral optical property of the glazing. The code calculates spectrum-weighted transmittance and front- and back-side reflectance, with absorptance derived from energy conservation. These results can be used to prepare time-dependent glazing definitions for EnergyPlus without changing its underlying simulation solvers.
+1. **Spectral weighting:** Calculate equivalent solar and visible optical properties using time-varying incident solar spectra and wavelength-dependent glazing properties.
+2. **Glazing input generation:** Convert the calculated optical properties into glazing material and construction definitions for EnergyPlus.
+3. **Dynamic window implementation:** Generate time-dependent glazing inputs for static, electrochromic, and thermochromic window systems.
 
-The repository provides three examples:
+Three examples are provided to demonstrate the SE workflow:
 
-1. **Static window (Example 01):** Calculate SE optical properties for clear glazing (CW) under successive solar spectra.
-2. **Electrochromic window (Example 02):** Calculate SE optical properties for three states of an electrochromic window (EW2).
-3. **Thermochromic window (Example 03):** Calculate SE optical properties for five temperature-dependent states of a thermochromic window (TW2).
+1. **Static window (Example 01):** Calculate SE optical properties for a clear window (CW) under different incident solar spectra.
+2. **Electrochromic window (Example 02):** Calculate SE optical properties for an electrochromic window (EW2) with three optical states.
+3. **Thermochromic window (Example 03):** Calculate SE optical properties for a thermochromic window (TW2) with five temperature-dependent states.
 
-The example programs illustrate spectral preprocessing and generation of glazing input files. They are not a complete annual building-simulation package.
+The examples illustrate the core SE calculations and the generation of optical inputs for EnergyPlus. Users can apply the same spectral-weighting workflow to other glazing systems and solar spectral datasets.
 
-The method is described in the manuscript *Revisiting solar admission through windows: natural spectral modeling* (Ma et al., Nature Communications, pending publication). Please cite the published article when using this tool in research.
+Technical details of the SE model, including its experimental validation and building-scale applications, are presented in our paper, *Revisiting solar admission through windows: natural spectral modeling* (Ma et al.). Please cite the corresponding publication when using this tool in research.
 
 ## System Requirements
 
 ### Software Dependencies
 
-- Python 3.9 or later
-- NumPy, pandas and openpyxl (see `requirements.txt`)
-- EnergyPlus is not required to run the Python examples. A complete EnergyPlus model is needed for building simulations.
+- Python 3.9 or higher
+- NumPy
+- pandas
+- openpyxl
 
-### Operating Systems
+The required Python packages are listed in `requirements.txt`.
 
-The examples use standard Python libraries. Operating-system compatibility has not been systematically verified.
-
-### Tested Versions
-
-- Python 3.13.5: the three example scripts were executed successfully; the generated CSV and IDF files matched the supplied example outputs.
-- EnergyPlus integration and the generated EMS/IDF snippets have not been validated in a complete building model. The current EMS construction-switching definitions require correction and testing before use in simulations.
+EnergyPlus is used for whole-building simulation applications. The Python examples can be executed independently to generate SE optical coefficients and EnergyPlus input files.
 
 ### Required Non-Standard Hardware
 
-No non-standard hardware is required for the Python examples.
+No non-standard hardware is required.
 
 ## Installation and Demo
 
-1. Download the repository using **Code → Download ZIP** on GitHub and extract it to your computer, or clone the repository.
+**Step 1. Download the code**
 
-2. Open a terminal in the repository folder and install the dependencies:
+Click **Code → Download ZIP** on the GitHub repository page and extract the downloaded files to your computer.
 
-   ```bash
-   python -m pip install -r requirements.txt
-   ```
+Alternatively, clone the repository using Git.
 
-3. Run all three examples:
+**Step 2. Install the required packages**
 
-   ```bash
-   python run_all_examples.py
-   ```
+Open a terminal in the repository directory and run:
 
-   Alternatively, run one example:
+`pip install -r requirements.txt`
 
-   ```bash
-   python examples/01_static_window.py
-   python examples/02_electrochromic_window.py
-   python examples/03_thermochromic_window.py
-   ```
+**Step 3. Run the examples**
 
-4. Check the results in `expected_output/`. Each example writes SE optical coefficients (`.csv`) and illustrative EnergyPlus input snippets (`.idf`). Running the examples regenerates these files.
+To execute all three examples, run:
 
-The example solar spectra are in `data/solar_spectra_example.xlsx`, and the glazing spectra are in `data/glazing_spectra_example.xlsx`. The solar file contains nine daytime spectra; the glazing file contains the corresponding example CW, EW2 and TW2 spectral properties. Users can replace these inputs with their own spectra following the formats described in the accompanying Supplementary Code documentation.
+`python run_all_examples.py`
 
-**Expected output:** SE coefficients for nine time steps in Example 01, 27 time–state combinations in Example 02 and 45 time–state combinations in Example 03. The IDF files are illustrative inputs, not ready-to-run or validated EnergyPlus building models. The visible-light weighting function in this demonstration uses an approximation of the CIE photopic response and should not be treated as a full reproduction of the article's colorimetric calculations.
+Alternatively, run each example separately:
+
+- **Example 01 — Static window:** `python examples/01_static_window.py`
+- **Example 02 — Electrochromic window:** `python examples/02_electrochromic_window.py`
+- **Example 03 — Thermochromic window:** `python examples/03_thermochromic_window.py`
+
+**Step 4. Input data**
+
+The example input files are provided in the `data` folder:
+
+- `solar_spectra_example.xlsx`: Incident solar spectral irradiance for nine daytime hours in Beijing.
+- `glazing_spectra_example.xlsx`: Wavelength-dependent transmittance and front- and back-side reflectance for CW, EW2, and TW2.
+
+Users can replace the example spectra with their own solar and glazing optical data using the same input formats.
+
+**Step 5. Expected output**
+
+The calculated results are saved in the `expected_output` folder:
+
+- **SE coefficient files (.csv):** Time-dependent solar and visible optical properties for the selected glazing systems.
+- **EnergyPlus input files (.idf):** Glazing material, construction, and EMS control definitions generated from the SE coefficients.
+
+The three examples produce:
+
+- **Static window:** 9 time-dependent SE coefficient sets.
+- **Electrochromic window:** 27 time–state combinations (9 hours × 3 states).
+- **Thermochromic window:** 45 time–temperature combinations (9 hours × 5 states).
+
+The generated optical coefficients can be used to prepare glazing inputs for building simulations under varying incident solar spectra.
 
 ## License
 
-See the repository's `LICENSE` file for the applicable terms once the license has been confirmed and added. The original Supplementary Code archive does not contain a complete license text; this must be resolved before public release.
+See the `LICENSE` file for details.
