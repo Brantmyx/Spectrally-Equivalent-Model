@@ -22,6 +22,8 @@ The examples illustrate the core SE calculations and the generation of optical i
 
 Technical details of the SE model, including its experimental validation and building-scale applications, are presented in our paper, *Revisiting solar admission through windows: natural spectral modeling* (Ma et al.). Please cite the corresponding publication when using this tool in research.
 
+For questions about the SE model or its implementation, please contact Dr. Yuxin Ma at mayuxin0110@163.com.
+
 ## System Requirements
 
 ### Software Dependencies
